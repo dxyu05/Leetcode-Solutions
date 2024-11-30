@@ -1,0 +1,68 @@
+# A Trie is a data structure which can be used to represent strings
+# It's most common use is like a lookup table, where you can "lookup" words
+# It is also commonly known as a Prefix Tree because the tree keeps track of all 
+# The letters in the current alphabet and it could represent the "prefix" of a 
+# new word. Each node should have a map/dictionary of children and a boolean
+# instance representing whether or not that node is the ending letter of a word
+
+class Node:
+    def __init__(self, children: dict, letter: str):
+        self.children = children
+        self.word = False
+
+class Trie:       
+    def __init__(self):
+        self.root = Node({}, None)
+
+    # for each char in our word we go down a level in the tree (traverse)
+    # if the current char is not a child of the node in the current level
+    # we have to add it to the tree. We continue this pattern until
+    # we run out of chars to add. At that point, that node makes a word
+    def insert(self, word: str) -> None:
+        curr = self.root
+
+        for char in word:
+            if str(char) not in curr.children:
+                curr.children[str(char)] = Node({}, False)
+
+            curr = curr.children[str(char)]
+
+        curr.word = True
+
+    # for each char in the word, we check to make sure
+    # it is a direct child in the tree. Otherwise, we know
+    # the word does not exist. Once we run out of chars,
+    # we need to check if the last letter in the tree is the 
+    # end of the word, and just return that boolean value
+    def search(self, word: str) -> bool:
+        curr = self.root
+
+        for char in word:
+            if str(char) not in curr.children:
+                return False
+            
+            curr = curr.children[str(char)]
+        
+        return curr.word
+        
+
+    # same as search, but once we run out of chars
+    # to check in the prefix string, then we just
+    # return true, we don't need to check if the 
+    # last letter creates a word
+    def startsWith(self, prefix: str) -> bool:
+        curr = self.root
+
+        for char in prefix:
+            if str(char) not in curr.children:
+                return False
+            
+            curr = curr.children[str(char)]
+        
+        return True
+
+# Your Trie object will be instantiated and called as such:
+# obj = Trie()
+# obj.insert(word)
+# param_2 = obj.search(word)
+# param_3 = obj.startsWith(prefix)
